@@ -96,7 +96,7 @@ class Game(object):         # Game class
             0,                      # y position
             self.font,              # font object
             TITLE,                  # text string
-            centering=True          # center text or not
+            center=True             # center text or not
         ))
         pygame.display.flip()
 
@@ -245,7 +245,7 @@ class Game(object):         # Game class
             self.font,          # font object
             TITLE,              # text string
             COLOURS['text'],    # text colour
-            centering=True      # if text is centered
+            center=True         # if text is centered
         ))
         self.menu.add(MenuItem(
             WIDTH/2, 130,       # x & y positions

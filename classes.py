@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-import os
 import pygame
-
-import random
-import string
 
 from loaders import *
 from pygame.locals import *
+
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, x_pos, y_pos, x_co, y_co, image):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
-        self.rect = image.get_rect(bottom = y_pos, right = x_pos )
+        self.rect = image.get_rect(bottom=y_pos, right=x_pos)
         self.x_co, self.y_co = x_co, y_co
 
     def move(self, x, y):
@@ -20,6 +17,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect.right += 40*x
         self.rect.bottom += 26*y
         #print "after x: "+str(self.rect.right)+"\ty: "+str(self.rect.bottom)
+
 
 class AnimatedTile(Tile):
     def __init__(self, x_pos, y_pos, x_co, y_co, images, fps=5):
@@ -54,29 +52,37 @@ class AnimatedTile(Tile):
             self.image = self._images[self._frame]
             self._last_update = t
 
+
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         pygame.sprite.Sprite.__init__(self)
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
 
+
 class Text(pygame.sprite.Sprite):
-    def __init__(self, x, y, font, text, color=(180, 180, 180), centering=False):
+    def __init__(self, x, y, font, text, color=(180, 180, 180), center=False):
         pygame.sprite.Sprite.__init__(self)
         self.font = font
         self.cursor = load_image("sword.png", tp=True)
         w, h = self.font.size(text)
         c = 0
-        if centering: x = x-w/2
+        if center:
+            x = x-w/2
         else:
             x = x-self.cursor.get_width()
             c = self.cursor.get_width()
         self.rect = pygame.Rect(x-c, y-h, w+c, h)
         self.color = color
         self.text = text
-        self.image = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 32)
+        self.image = pygame.Surface(
+            (self.rect.width, self.rect.height),
+            pygame.SRCALPHA,
+            32
+        )
         self.image.convert_alpha()
         self.image.blit(self.font.render(self.text, True, self.color), (c, 0))
         self.last_update = 0
@@ -92,40 +98,66 @@ class Text(pygame.sprite.Sprite):
             return t
         return False
 
+
 class MenuItem(Text):
-    def __init__(self, x, y, font, text, action, hovered=False, centering=False, color=(180, 180, 180), hovercolor=(250, 100, 25)):
+    def __init__(
+        self, x, y, font, text, action,
+        hovered=False,
+        centering=False,
+        color=(180, 180, 180),
+        hovercolor=(250, 100, 25)
+    ):
         super(MenuItem, self).__init__(x, y, font, text, color, centering)
         self.hovercolor = hovercolor
         self.hovered = hovered
         self.rect.width += self.cursor.get_width()
-        if self.hovered: self.hover()
+        if self.hovered:
+            self.hover()
         self.action = action
 
     def hover(self):
-        image = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 32)
+        image = pygame.Surface(
+            (self.rect.width, self.rect.height),
+            pygame.SRCALPHA,
+            32
+        )
         image.convert_alpha()
-        image.blit(self.cursor, (0, self.rect.height/2-self.cursor.get_height()/2))
-        image.blit(self.font.render(self.text, True, self.hovercolor), (self.cursor.get_width(), 0))
+        image.blit(
+            self.cursor,
+            (0, self.rect.height/2-self.cursor.get_height()/2)
+        )
+        image.blit(
+            self.font.render(self.text, True, self.hovercolor),
+            (self.cursor.get_width(), 0)
+        )
         self.image = image
         self.hovered = True
 
     def normal(self):
-        image = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 32)
+        image = pygame.Surface(
+            (self.rect.width, self.rect.height),
+            pygame.SRCALPHA,
+            32
+        )
         image.convert_alpha()
-        image.blit(self.font.render(self.text, True, self.color), (self.cursor.get_width(), 0))
+        image.blit(
+            self.font.render(self.text, True, self.color),
+            (self.cursor.get_width(), 0)
+        )
         self.image = image
         self.hovered = False
+
 
 class MusicPlayer(object):
 
     def __init__(self):
-        self.songend = pygame.USEREVENT + 1 #Setting up an event. Whenever a track ends another gets added to the queue.
+        self.songend = pygame.USEREVENT + 1  # Whenever a track ends..
         self.tracknumber = 0
-        self.musiclist = load_files("music", ".ogg")
-        load_music(self.musiclist[self.tracknumber])
-        pygame.mixer.music.set_endevent(self.songend)
+        self.musiclist = load_files("music", ".ogg")   # another one
+        load_music(self.musiclist[self.tracknumber])   # is loaded
+        pygame.mixer.music.set_endevent(self.songend)  # and added
         if len(self.musiclist) > 1:
-            self.tracknumber += 1
+            self.tracknumber += 1                      # to the queue
         pygame.mixer.music.queue("music/"+self.musiclist[self.tracknumber])
 
     def next(self):
@@ -133,12 +165,14 @@ class MusicPlayer(object):
             self.tracknumber += 1
             if self.tracknumber+1 >= len(self.musiclist):
                 self.tracknumber = 0
-                pygame.mixer.music.queue("music/"+self.musiclist[self.tracknumber])
+                track = "music/"+self.musiclist[self.tracknumber]
+                pygame.mixer.music.queue(track)
             else:
-                pygame.mixer.music.queue("music/"+self.musiclist[self.tracknumber+1])
+                track = "music/"+self.musiclist[self.tracknumber+1]
+                pygame.mixer.music.queue(track)
+
 
 class Mouse(pygame.sprite.Sprite):
-  
     def __init__(self, rect):
         pygame.sprite.Sprite.__init__(self)
         self.rect = rect
