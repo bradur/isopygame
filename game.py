@@ -205,16 +205,20 @@ class Game(object):
             if event.type == QUIT:
                 exit()
 
-            # get keyboard presses, better for multiple keys at once
-            pressed_keys = pygame.key.get_pressed()
-            x, y = 0, 0
-            for key, value in self.movekeys.items():
-                if pressed_keys[key]:
-                    x += value[0]
-                    y += value[1]
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    exit()
 
-            if x != 0 or y != 0:
-                self.ground.move(x, y)
+                # get keyboard presses, better for multiple keys at once
+                pressed_keys = pygame.key.get_pressed()
+                x, y = 0, 0
+                for key, value in self.movekeys.items():
+                    if pressed_keys[key]:
+                        x += value[0]
+                        y += value[1]
+
+                if x != 0 or y != 0:
+                    self.ground.move(x, y)
 
             if event.type == USEREVENT+1:  # use this to catch timers
                 pass

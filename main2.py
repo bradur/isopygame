@@ -11,7 +11,7 @@ if not pygame.font:
     print 'Warning, fonts disabled'
 if not pygame.mixer:
     print 'Warning, sound disabled'
-    
+
 COLOURS = {
     'white': (255, 255, 255),
     'text': (190, 190, 190),
@@ -25,7 +25,7 @@ class MainGame(object):         # Game class
         pygame.mixer.pre_init(44100, -16, 2, 2048)  # sounds
         pygame.init()
         pygame.display.set_caption("Isometric2")  # Set app name
-        pygame.key.set_repeat(500, 100)
+        pygame.key.set_repeat(100, 20)
 
         self.movekeys = {
             97:  (1, 0),     # a

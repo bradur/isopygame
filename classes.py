@@ -18,13 +18,6 @@ class Ground(pygame.sprite.OrderedUpdates):
             tile.rect.right += self.tile_w*x
             tile.rect.bottom += self.tile_h*y
         self.xy[0], self.xy[1] = self.xy[0]+x, self.xy[1]+y
-        if x == 1:
-            if 0 <= self.xy[1] < len(self.data):
-                if 0 <= self.xy[0]+self.h_tiles < len(self.data[self.xy[1]]["tiles"]):
-                    #print self.data[self.xy[1]]["tiles"][self.xy[0]+self.h_tiles-1]
-                else:
-                    #print "white"
-            print "white"
 
 
 class Tile(pygame.sprite.Sprite):
