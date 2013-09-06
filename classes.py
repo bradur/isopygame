@@ -5,6 +5,28 @@ from loaders import *
 from pygame.locals import *
 
 
+class Ground(pygame.sprite.OrderedUpdates):
+    def __init__(self, x, y, data, tile_w, tile_h, xy):
+        super(Ground, self).__init__()
+        self.data = data
+        self.h_tiles, self.y_tiles = x, y
+        self.tile_w, self.tile_h = tile_w, tile_h
+        self.xy = xy
+
+    def move(self, x, y):
+        for tile in self:
+            tile.rect.right += self.tile_w*x
+            tile.rect.bottom += self.tile_h*y
+        self.xy[0], self.xy[1] = self.xy[0]+x, self.xy[1]+y
+        if x == 1:
+            if 0 <= self.xy[1] < len(self.data):
+                if 0 <= self.xy[0]+self.h_tiles < len(self.data[self.xy[1]]["tiles"]):
+                    #print self.data[self.xy[1]]["tiles"][self.xy[0]+self.h_tiles-1]
+                else:
+                    #print "white"
+            print "white"
+
+
 class Tile(pygame.sprite.Sprite):
     def __init__(self, x_pos, y_pos, x_co, y_co, image):
         pygame.sprite.Sprite.__init__(self)
@@ -150,10 +172,14 @@ class MenuItem(Text):
 
 class MusicPlayer(object):
 
-    def __init__(self):
+    def __init__(self, song=""):
+
         self.songend = pygame.USEREVENT + 1  # Whenever a track ends..
         self.tracknumber = 0
-        self.musiclist = load_files("music", ".ogg")   # another one
+        if song:
+            self.musiclist = [song]
+        else:
+            self.musiclist = load_files("music", ".ogg")   # another one
         load_music(self.musiclist[self.tracknumber])   # is loaded
         pygame.mixer.music.set_endevent(self.songend)  # and added
         if len(self.musiclist) > 1:

@@ -57,7 +57,7 @@ def load_sliced_sprites(w, h, filename, animated=[]):
         Master can be any height.
         Sprites frames width must be the same width
         Master width must be len(frames)*frame.width
-        Assuming you ressources directory is named "ressources"
+        Assuming you resources directory is named "resources"
     '''
     images = []
     master_image = pygame.image.load(os.path.join('img', filename))
